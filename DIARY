@@ -1,0 +1,23 @@
+8/25:
+
+Installed nodejs, got a web server. Researched how to share code between client and server and then got bored so decided to write game logic.
+
+First try, started defining tiles based on edges. Immediately realized this won't work because different tiles can have the same edge (city on opposite edges, or city bridging two edges). Going to try and define edges and connections instead. Will probably implement abbots as "tile features". No idea how I'm going to implement fields - will probably have to split the tile into 8 edges and define connections.
+
+The set of all possible carcassone tiles is pretty neat - see https://boardgamegeek.com/filepage/53516/all-rest-possible-carcassonne-tiles-p1-6
+
+In any case, looking at http://mlab.taik.fi/~apaterso/projects/si/resources/carc_all-tile-distribution-sheets_by_zac-toups.pdf this system _should_ support any tile combination using vanilla Carcassonne rules.
+
+--
+
+Added all tile types, minimal testing.
+
+Roadmap:
+1. Add GameBoard class (very simple 2d array w/ basic validation)
+2. Aquire tile images
+3. Add simple renderer for gameboard (someday we probably want webgl, but for now splitting out divs or a table is fine)
+4. Make GameBoard class able to expand in any direction
+5. Somewhere in here add tile rotation
+
+8/26:
+
