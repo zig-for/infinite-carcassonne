@@ -58,11 +58,11 @@ var Feature = {
 var TileTypes = {
 	CCCC: {edges: [EdgeType.City, EdgeType.City, EdgeType.City, EdgeType.City], connections: ConnectionTypes.All, Features:{[Feature.CityBonus]: true}},
 	RRRR: {edges: [EdgeType.Road, EdgeType.Road, EdgeType.Road, EdgeType.Road], connections: ConnectionTypes.None},
-	CCC: {edges: [EdgeType.City, EdgeType.City, EdgeType.City, EdgeType.Field], connections: ConnectionTypes.ThreeWayCity},
-	CCCB: {edges: [EdgeType.City, EdgeType.City, EdgeType.City, EdgeType.Field], connections: ConnectionTypes.ThreeWayCity, Features:{[Feature.CityBonus]: true}},
-	CCCR: {edges: [EdgeType.City, EdgeType.City, EdgeType.City, EdgeType.Road], connections: ConnectionTypes.ThreeWayCity},
-	CCCRB: {edges: [EdgeType.City, EdgeType.City, EdgeType.City, EdgeType.Road], connections: ConnectionTypes.ThreeWayCity, Features:{[Feature.CityBonus]: true}},
-	RRR: {edges: [EdgeType.Road, EdgeType.Road, EdgeType.Road, EdgeType.Field], connections: ConnectionTypes.None},
+	CCC: {edges: [EdgeType.City, EdgeType.City,  EdgeType.Field, EdgeType.City], connections: ConnectionTypes.ThreeWayCity},
+	CCCB: {edges: [EdgeType.City, EdgeType.City, EdgeType.Field, EdgeType.City], connections: ConnectionTypes.ThreeWayCity, Features:{[Feature.CityBonus]: true}},
+	CCCR: {edges: [EdgeType.City, EdgeType.City, EdgeType.Road, EdgeType.City], connections: ConnectionTypes.ThreeWayCity},
+	CCCRB: {edges: [EdgeType.City, EdgeType.City, EdgeType.Road, EdgeType.City], connections: ConnectionTypes.ThreeWayCity, Features:{[Feature.CityBonus]: true}},
+	RRR: {edges: [EdgeType.Field, EdgeType.Road, EdgeType.Road, EdgeType.Road], connections: ConnectionTypes.None},
 	LongCity: {edges: [EdgeType.Field, EdgeType.City, EdgeType.Field, EdgeType.City], connections: ConnectionTypes.EW},
 	LongCityB: {edges: [EdgeType.Field, EdgeType.City, EdgeType.Field, EdgeType.City], connections: ConnectionTypes.EW, Features:{[Feature.CityBonus]: true}},
 	StraightRoad: {edges: [EdgeType.Road, EdgeType.Field, EdgeType.Road, EdgeType.Field], connections: [[Dir.N, Dir.S], [Dir.E], [Dir.W]]},
@@ -72,7 +72,7 @@ var TileTypes = {
 	CCRRB: {edges: [EdgeType.City, EdgeType.Road, EdgeType.Road, EdgeType.City], connections: ConnectionTypes.CornerCity,Features: {[Feature.CityBonus]: true}},
 	CurveRoad: {edges: [EdgeType.Field, EdgeType.Field, EdgeType.Road, EdgeType.Road], connections: [[Dir.N, Dir.S], [Dir.E], [Dir.W]]},
 	DoubleCityCorner: {edges: [EdgeType.City, EdgeType.City, EdgeType.Field, EdgeType.Field], connections: ConnectionTypes.None},
-	DoubleCitySides: {edges: [EdgeType.Field, EdgeType.City, EdgeType.City, EdgeType.Field], connections: ConnectionTypes.None},
+	DoubleCitySides: {edges: [EdgeType.Field, EdgeType.City, EdgeType.Field, EdgeType.City], connections: ConnectionTypes.None},
 	Cloister: {edges: [EdgeType.Field, EdgeType.Field, EdgeType.Field, EdgeType.Field], connections: ConnectionTypes.None, Features: {[Feature.Cloister]: true}},
 	CloisterRoad: {edges: [EdgeType.Field, EdgeType.Field, EdgeType.Road, EdgeType.Field], connections: ConnectionTypes.None, Features:{[Feature.Cloister]: true}},
 	SingleCity: {edges: [EdgeType.City, EdgeType.Field, EdgeType.Field, EdgeType.Field], connections: ConnectionTypes.None},
@@ -105,7 +105,6 @@ class GameBoard {
 		this.tiles = {}
 		this.extents = [[0,0],[0,0]]
 	}
-
 
 
 	get(x, y) {

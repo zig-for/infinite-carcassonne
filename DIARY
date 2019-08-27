@@ -21,3 +21,27 @@ Roadmap:
 
 8/26:
 
+Inline asserts are the best.
+
+> [0,1] + [2,2]
+"0,12,2"
+
+Okay, javascript.
+
+Tile placement logic _appears_ to work, other than not requiring a single adjacent tile. Next step is to add vis so I can generate a large city and visually validate that everything hooks up correctly.
+
+I really don't want to do this. I need to figure out shared client/server logic for javascript.
+
+---
+
+Set up webpack. Appears to work, but we will see how things are once I get client/server running.
+
+Got basic display working for tiles. It's really kludged, but at least it's working.
+
+Tomorrow's tasks: add all the images, work on generating a 20x20 random board.
+
+8/27:
+
+Got all the images, fixed some errors in tile definitions, everything looks great now.
+
+Generating row by row looks a little unnatural. Next step is to keep a free list and generate on that.
