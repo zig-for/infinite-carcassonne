@@ -44,4 +44,4 @@ Tomorrow's tasks: add all the images, work on generating a 20x20 random board.
 
 Got all the images, fixed some errors in tile definitions, everything looks great now.
 
-Generating row by row looks a little unnatural. Next step is to keep a free list and generate on that.
+Generating row by row looks a little unnatural. Two issues - tile distribution is wrong, and  Next step is to keep a free list and generate on that.

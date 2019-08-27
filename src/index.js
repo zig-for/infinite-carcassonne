@@ -77,6 +77,7 @@ function component() {
     for(var y = board.extents[0][1]; y <= board.extents[1][1]; y++) {
     	var div = document.createElement("div");
     	div.style.height = "90px"; // hack
+    	div.style.width = 90*(1+board.extents[1][1] - board.extents[0][1]) + "px";
     	element.appendChild(div)
     	for(var x = board.extents[0][0]; x <= board.extents[1][0]; x++) {
     		var t = board.get(x, y);
