@@ -44,4 +44,18 @@ Tomorrow's tasks: add all the images, work on generating a 20x20 random board.
 
 Got all the images, fixed some errors in tile definitions, everything looks great now.
 
-Generating row by row looks a little unnatural. Two issues - tile distribution is wrong, and  Next step is to keep a free list and generate on that.
+Generating row by row looks a little unnatural. Two issues - tile distribution is wrong, and tile placement is done in rows. Next step is to keep a free list and generate on that.
+
+---
+
+I can see the need for a Point2D object soon.
+
+Added more realistic tile placement. Starts from starter tile and randomly draws new tiles to insert.
+
+Generation with 1000+ tiles works but is kind of slow. 300ms
+
+Most of generation time is spent finding free spots for tiles. For _large_ maps I will likely need to move from maintaining one free list to maintaining a map of edge combination -> free list.
+
+---
+
+Added base tile distribution. Autoplacement of tiles is now realisitic. App will now use tetris style grab bag of tiles.

@@ -82,6 +82,33 @@ var TileTypes = {
 	CityTripleRoad: {edges: [EdgeType.City, EdgeType.Road, EdgeType.Road, EdgeType.Road], connections: ConnectionTypes.None},
 }
 
+var BaseTileDistribution = {
+	CCCC: 1,
+	RRRR:1,
+	CCC:3,
+	CCCB:1,
+	CCCR:1,
+	CCCRB:2,
+	RRR:4,
+	LongCity:1,
+	LongCityB:2,
+	StraightRoad:8,
+	CCGG:3,
+	CCGGB:2,
+	CCRR:3,
+	CCRRB:2,
+	CurveRoad:9,
+	DoubleCityCorner:2,
+	DoubleCitySides:3,
+	Cloister:4,
+	CloisterRoad:2,
+	SingleCity:5,
+	CitySERoad:3,
+	CitySWRoad:3,
+	CityEWRoad:3,
+	CityTripleRoad:3,
+}
+
 for (k in TileTypes) {
 	TileTypes[k]["name"] = k
 }
@@ -89,13 +116,38 @@ for (k in TileTypes) {
 // Given a tile, extract the edges and rotate the edge array
 // rotation is Clockwise
 // There's probably a much nicer way to do this with _.js
-function getRotatedEdges(tile, rotation) {
+function getRotatedEdges(tile, rotation) {/*
 	return Array.apply(null, Array(4)).map(function(x, i) {
 		// Some messiness here because negative values don't play nicely with modulo
 		// Using +rotation would have CC rotation
 		return tile.edges[(4+i-rotation)%4]
-	})
+	})*/
+	return [tile.edges[(4-rotation)%4],
+	tile.edges[(5-rotation)%4],
+	tile.edges[(6-rotation)%4],
+	tile.edges[(7-rotation)%4]];
 }
+
+
+function getFourBorders(x, y) {
+		/*out = new Array(4)
+		// TODO: ensure we hit at least one other tile
+		
+		for(var i = 0; i < 4; i++){
+			const dir = DirToVec[i];
+
+			out[i] = [x+dir[0], y+dir[1]]
+		}
+
+		return out*/
+
+		return [
+		[x+DirToVec[0][0], y+DirToVec[0][1]],
+		[x+DirToVec[1][0], y+DirToVec[1][1]],
+		[x+DirToVec[2][0], y+DirToVec[2][1]],
+		[x+DirToVec[3][0], y+DirToVec[3][1]]]
+	}
+
 
 assert.strictEqual(TileTypes.SingleCity[Dir.N], TileTypes.CCCR[Dir.S])
 
@@ -104,6 +156,8 @@ class GameBoard {
 		// Using sparse map for now, this is really inefficient for data that is probably going to pack tightly
 		this.tiles = {}
 		this.extents = [[0,0],[0,0]]
+
+		this.freeTiles = new Set()
 	}
 
 
@@ -134,11 +188,12 @@ class GameBoard {
 
 		const edges = getRotatedEdges(t, rotation);
 
+		const borders = getFourBorders(x, y)
+
 		// TODO: ensure we hit at least one other tile
 		for(var i = 0; i < 4; i++){
-			const dir = DirToVec[i];
-
-			const otherTile = this.get(x+dir[0], y+dir[1])
+			const pos = borders[i]
+			const otherTile = this.get(pos[0], pos[1])
 			if(otherTile) {
 				const otherEdges = getRotatedEdges(otherTile.t, otherTile.r)
 
@@ -157,6 +212,17 @@ class GameBoard {
 		}
 
 		this.put(x, y, {t:t, r: rotation});
+		
+		// Should this go in put()?
+		this.freeTiles.delete(JSON.stringify([x,y]))
+
+		const borders = getFourBorders(x, y)
+		for(var i = 0; i < 4; i++){
+			const pos = borders[i]
+			if(!this.get(pos[0], pos[1])) {
+				this.freeTiles.add(JSON.stringify(pos))
+			}
+		}
 
 		return true;
 	}
@@ -177,4 +243,5 @@ module.exports = {
 	foo: 1,
 	GameBoard: GameBoard,
 	TileTypes: TileTypes,
+	BaseTileDistribution: BaseTileDistribution,
 }

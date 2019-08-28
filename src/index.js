@@ -27,18 +27,57 @@ function component() {
 
 	element.innerHTML = _.join(['Hello', 'world', gamelogic], ' ');
 
+	
 	var board = new gamelogic.GameBoard();
 	board.tryInsertTile(gamelogic.TileTypes.CityEWRoad, 0, 0, 0)
-	/*board.tryInsertTile(gamelogic.TileTypes.CCCC, 1, 0, 0)
-	board.tryInsertTile(gamelogic.TileTypes.CCCC, 1, 1, 0)
-	board.tryInsertTile(gamelogic.TileTypes.SingleCity, -1, 0, 1)
-*/
-
-	var allTiles = Object.keys(gamelogic.TileTypes) 
-
+	
 	var brk = document.createElement("br");
 	element.appendChild(brk.cloneNode());
 
+	const usePhysicalBag = true;
+
+	var tileBag = []
+
+	function refillBag() {
+		var allPossibleTiles = Object.keys(gamelogic.TileTypes);
+		for(const tile of allPossibleTiles) {
+			tileBag = tileBag.concat(Array(gamelogic.BaseTileDistribution[tile]).fill(tile));
+		}
+	}
+	
+	refillBag();
+	var numTiles = tileBag.length * 4;
+
+	for(var placedTiles = 0; placedTiles < numTiles; placedTiles++) {
+		if(tileBag.length == 0)
+		{
+			refillBag();
+		}
+
+		var index = Math.floor( Math.random()*tileBag.length );
+		var tile = gamelogic.TileTypes[tileBag[index]];
+
+		for(const strPos of board.freeTiles) {
+			const pos = JSON.parse(strPos)
+			const rotation = Math.floor( Math.random()*4 );
+			var inserted = false;
+			for(var i = 0; i < 4; i++) {
+				if(board.tryInsertTile(tile, pos[0], pos[1], (rotation + i ) % 4)) {
+					inserted = true;
+					break
+				}
+			}
+			if(inserted) {
+				break;
+			}
+		}
+		if(usePhysicalBag)
+		{
+  			tileBag.splice( index, 1 );
+		}
+
+	}
+/*
 	const maxsize = 20
     for(var y = 0; y < maxsize; y++) {
     	for(var x = 0; x < maxsize; x++) {
@@ -72,12 +111,12 @@ function component() {
 
     	}
     }
-	
+    */
 
     for(var y = board.extents[0][1]; y <= board.extents[1][1]; y++) {
     	var div = document.createElement("div");
     	div.style.height = "90px"; // hack
-    	div.style.width = 90*(1+board.extents[1][1] - board.extents[0][1]) + "px";
+    	div.style.width = 2*90*(1+board.extents[1][1] - board.extents[0][1]) + "px";
     	element.appendChild(div)
     	for(var x = board.extents[0][0]; x <= board.extents[1][0]; x++) {
     		var t = board.get(x, y);
@@ -89,7 +128,7 @@ function component() {
     		}
     		else
     		{
-				img.src = "tileimages/empty.png";
+    			img.src = "tileimages/empty.png";
     		}
     		div.appendChild(img);
     	}
@@ -97,7 +136,7 @@ function component() {
     }
 
 
-	return element;
+    return element;
 }
 
 document.body.appendChild(component());
