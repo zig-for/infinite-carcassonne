@@ -25,118 +25,105 @@ server.listen(port, hostname, () => {
 function component() {
 	const element = document.createElement('div');
 
-	element.innerHTML = _.join(['Hello', 'world', gamelogic], ' ');
+	var bagInput = document.createElement("input");
+	bagInput.setAttribute("type", "number");
+	bagInput.value = 4;
+
+
 
 	
-	var board = new gamelogic.GameBoard();
-	board.tryInsertTile(gamelogic.TileTypes.CityEWRoad, 0, 0, 0)
-	
-	var brk = document.createElement("br");
-	element.appendChild(brk.cloneNode());
 
-	const usePhysicalBag = true;
+	const boardDiv = document.createElement('div');
+	boardDiv.setAttribute("id","board");
 
-	var tileBag = []
 
-	function refillBag() {
-		var allPossibleTiles = Object.keys(gamelogic.TileTypes);
-		for(const tile of allPossibleTiles) {
-			tileBag = tileBag.concat(Array(gamelogic.BaseTileDistribution[tile]).fill(tile));
+	function generateBoard() {
+		const numBags = bagInput.value;
+		boardDiv.innerHTML = 'Generated with ' + numBags + ' bags of tiles';
+
+		var board = new gamelogic.GameBoard();
+		board.tryInsertTile(gamelogic.TileTypes.CityEWRoad, 0, 0, 0)
+		
+		var brk = document.createElement("br");
+		boardDiv.appendChild(brk.cloneNode());
+
+		const usePhysicalBag = true;
+
+		var tileBag = []
+
+		function refillBag() {
+			var allPossibleTiles = Object.keys(gamelogic.TileTypes);
+			for(const tile of allPossibleTiles) {
+				tileBag = tileBag.concat(Array(gamelogic.BaseTileDistribution[tile]).fill(tile));
+			}
 		}
-	}
-	
-	refillBag();
-	var numTiles = tileBag.length * 4;
+		
+		refillBag();
+		const numTiles = tileBag.length * numBags;
 
-	for(var placedTiles = 0; placedTiles < numTiles; placedTiles++) {
-		if(tileBag.length == 0)
-		{
-			refillBag();
-		}
+		for(var placedTiles = 0; placedTiles < numTiles; placedTiles++) {
+			if(tileBag.length == 0)
+			{
+				refillBag();
+			}
 
-		var index = Math.floor( Math.random()*tileBag.length );
-		var tile = gamelogic.TileTypes[tileBag[index]];
+			var index = Math.floor( Math.random()*tileBag.length );
+			var tile = gamelogic.TileTypes[tileBag[index]];
 
-		for(const strPos of board.freeTiles) {
-			const pos = JSON.parse(strPos)
-			const rotation = Math.floor( Math.random()*4 );
-			var inserted = false;
-			for(var i = 0; i < 4; i++) {
-				if(board.tryInsertTile(tile, pos[0], pos[1], (rotation + i ) % 4)) {
-					inserted = true;
-					break
+			for(const strPos of board.freeTiles) {
+				const pos = JSON.parse(strPos)
+				const rotation = Math.floor( Math.random()*4 );
+				var inserted = false;
+				for(var i = 0; i < 4; i++) {
+					if(board.tryInsertTile(tile, pos[0], pos[1], (rotation + i ) % 4)) {
+						inserted = true;
+						break
+					}
+				}
+				if(inserted) {
+					break;
 				}
 			}
-			if(inserted) {
-				break;
+			if(usePhysicalBag)
+			{
+				tileBag.splice( index, 1 );
 			}
-		}
-		if(usePhysicalBag)
-		{
-  			tileBag.splice( index, 1 );
+
 		}
 
+		for(var y = board.extents[0][1]; y <= board.extents[1][1]; y++) {
+			var div = document.createElement("div");
+			div.style.height = "90px"; // hack
+			div.style.width = 2*90*(1+board.extents[1][1] - board.extents[0][1]) + "px";
+			boardDiv.appendChild(div)
+			for(var x = board.extents[0][0]; x <= board.extents[1][0]; x++) {
+				var t = board.get(x, y);
+				var img = document.createElement("img");
+				
+				if(t) {
+					img.style.transform = "rotate(" + 90 * t.r + "deg)";
+					img.src = "tileimages/" + t.t.name + ".png";
+				}
+				else
+				{
+					img.src = "tileimages/empty.png";
+				}
+				div.appendChild(img);
+			}
+			//element.appendChild(brk.cloneNode());
+		}
 	}
-/*
-	const maxsize = 20
-    for(var y = 0; y < maxsize; y++) {
-    	for(var x = 0; x < maxsize; x++) {
+	generateBoard();
 
-    		if(x == 0 && y == 0) {
-    			continue;
-    		}
+	var regenButton = document.createElement("button");
+	regenButton.innerHTML = "Regenerate";
+	regenButton.onclick = generateBoard;
 
-    		var possibleTiles = allTiles.slice(0);
-			
-    		while(possibleTiles.length) {
-  			    var index = Math.floor( Math.random()*possibleTiles.length );
-  			    console.log(possibleTiles[index]);
-    			var tile = gamelogic.TileTypes[possibleTiles[index]];
+	element.append(bagInput);
+	element.append(regenButton);
+	element.append(boardDiv);
 
-    			const rotation = Math.floor( Math.random()*4 );
-    			var inserted = false;
-  				for(var i = 0; i < 4; i++) {
-	    			if(board.tryInsertTile(tile, x, y, (rotation + i ) % 4)) {
-						inserted = true;
-	    				break
-	    			}
-	    		}
-	    		if(inserted) {
-	    			break;
-	    		}
-
-    			possibleTiles.splice( index, 1 );
-    		}
-    		
-
-    	}
-    }
-    */
-
-    for(var y = board.extents[0][1]; y <= board.extents[1][1]; y++) {
-    	var div = document.createElement("div");
-    	div.style.height = "90px"; // hack
-    	div.style.width = 2*90*(1+board.extents[1][1] - board.extents[0][1]) + "px";
-    	element.appendChild(div)
-    	for(var x = board.extents[0][0]; x <= board.extents[1][0]; x++) {
-    		var t = board.get(x, y);
-    		var img = document.createElement("img");
-    		
-    		if(t) {
-    			img.style.transform = "rotate(" + 90 * t.r + "deg)";
-    			img.src = "tileimages/" + t.t.name + ".png";
-    		}
-    		else
-    		{
-    			img.src = "tileimages/empty.png";
-    		}
-    		div.appendChild(img);
-    	}
-    	//element.appendChild(brk.cloneNode());
-    }
-
-
-    return element;
+	return element;
 }
 
 document.body.appendChild(component());
